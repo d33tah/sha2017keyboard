@@ -21,7 +21,7 @@ except ImportError:
 
 
 NUM_RANGES = 4
-ASCII_RANGE = (32, 126)
+ASCII_RANGE = (0, 128)
 FONT = 'Roboto_Regular12'
 
 
