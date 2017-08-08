@@ -2,7 +2,6 @@
 
 TODO:
 
-    Display options in <left, up, right, down> instead of line after line,
     If len(range) < 4, just display the options instead of redundant subranges
 """
 
@@ -88,19 +87,28 @@ class Editor:
         print(("Drawing. self.buf=%(buf)r, "
               "self.character_input=%(character_input)r") % self.__dict__)
         self.ugfx.clear(self.ugfx.WHITE)
-        self.ugfx.string_box(0, 4 * 16, 90, 90, self.buf, FONT,
-                             self.ugfx.BLACK, self.ugfx.justifyCenter)
+        self.ugfx.string_box(0, -40, 90, 90, self.buf, FONT,
+                             self.ugfx.BLACK, self.ugfx.justifyLeft)
 
-        for i in range(NUM_RANGES):
-            start, end = gen_range(self.character_input.start,
-                                   self.character_input.end, i, NUM_RANGES)
-            if start == end:
-                s = chr(start)
-            else:
-                s = '%r - %r' % (chr(start), chr(end))
-            self.ugfx.string_box(0, i * 16, 90, 90, s, FONT,
-                                 self.ugfx.BLACK, self.ugfx.justifyCenter)
+        offset_x = 0
+        offset_y = 50
+        width = 90
+        self.display_range(offset_x + 0, offset_y + 1*12, 0)
+        self.display_range(offset_x + width // 2, offset_y + 0*12, 1)
+        self.display_range(offset_x + width, offset_y + 1*12, 2)
+        self.display_range(offset_x + width // 2, offset_y + 2*12, 3)
         self.ugfx.flush()
+
+    def display_range(self, x, y, i, x1=70, y1=70):
+        start, end = gen_range(self.character_input.start,
+                               self.character_input.end, i, NUM_RANGES)
+        if start == end:
+            the_repr = repr(chr(start))[1:-1]
+            s = chr(start) if len(the_repr) == 1 else the_repr
+        else:
+            s = '%r - %r' % (chr(start), chr(end))
+        self.ugfx.string_box(x, y, x1, y1, s, FONT,
+                             self.ugfx.BLACK, self.ugfx.justifyCenter)
 
     def key_pressed(self, key):
         if key in self.RANGE_ORDER:
